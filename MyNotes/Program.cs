@@ -1,26 +1,41 @@
-using MyNotes.DataAccess;
+using MyNotes.Application.Interfaces.Auth;
+using MyNotes.Application.Services;
+using MyNotes.Infrastructure;
+using MyNotes.Application.Interfaces.Repositories;
+using MyNotes.Persistence.Repositories;
+using MyNotes.Persistence;
+using MyNotes.Extensions;
+using Microsoft.EntityFrameworkCore;
+using MyNotes.Middlewares;
+using Microsoft.AspNetCore.CookiePolicy;
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var configuration = builder.Configuration;
 
-builder.Services.AddSwaggerGen();
-builder.Services.AddControllers();
-builder.Services.AddScoped<NotesDbContext>();
+services.AddApiAuthentication(configuration);
 
-builder.Services.AddCors(options =>
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
+
+services.AddTransient<ExceptionMiddleware>();
+
+services.AddDbContext<NotesDbContext>(options =>
 {
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.WithOrigins("http://localhost:5173");
-        policy.AllowAnyHeader();
-        policy.AllowAnyMethod();
-    });
+    options.UseNpgsql(configuration.GetConnectionString(nameof(NotesDbContext)));
 });
+services.AddScoped<IJwtProvider, JwtProvider>();
+services.AddScoped<IPasswordHasher, PasswordHasher>();
+
+services.AddScoped<INotesRepository, NotesRepository>();
+services.AddScoped<IUsersRepository, UsersRepository>();
+
+services.AddScoped<NotesService>();
+services.AddScoped<UsersService>();
+
+services.AddAutoMapper(typeof(DataBaseMappings));
 
 var app = builder.Build();
-
-using var scope = app.Services.CreateScope();
-await using var dbContext = scope.ServiceProvider.GetRequiredService<NotesDbContext>();
-await dbContext.Database.EnsureCreatedAsync();
 
 if (app.Environment.IsDevelopment())
 {
@@ -28,7 +43,25 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors();
-app.MapControllers();
+app.UseMiddleware<ExceptionMiddleware>();
+
+app.UseHttpsRedirection();
+
+app.UseCookiePolicy(new CookiePolicyOptions
+{
+    MinimumSameSitePolicy = SameSiteMode.Strict,
+    HttpOnly = HttpOnlyPolicy.Always,
+    Secure = CookieSecurePolicy.Always,
+});
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.AddMappedEndpoints();
+
+app.MapGet("get", () =>
+{
+    return Results.Ok("ok");
+}).RequireAuthorization();
 
 app.Run();

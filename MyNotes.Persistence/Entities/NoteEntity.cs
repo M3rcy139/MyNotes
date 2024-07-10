@@ -1,0 +1,10 @@
+﻿namespace MyNotes.Persistence.Entities
+{
+    public class NoteEntity
+    {
+        public Guid Id { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public DateTime CreatedAt { get; set; }
+    }
+}
