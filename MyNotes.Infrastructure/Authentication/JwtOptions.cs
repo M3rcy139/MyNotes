@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyNotes.Infrastructure
+namespace MyNotes.Infrastructure.Authentication
 {
     public class JwtOptions
     {

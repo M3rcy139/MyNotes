@@ -1,9 +1,10 @@
-﻿using MyNotes.Application.Interfaces.Repositories;
-using MyNotes.Core.Models;
+﻿using MyNotes.Core.Models;
+using MyNotes.Core.Interfaces.Services;
+using MyNotes.Core.Interfaces.Repositories;
 
 namespace MyNotes.Application.Services
 {
-    public class NotesService
+    public class NotesService : INoteService
     {
         private readonly INotesRepository _noteRepository;
         public NotesService(INotesRepository noteRepository)

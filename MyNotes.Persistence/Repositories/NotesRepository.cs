@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using MyNotes.Application.Interfaces.Repositories;
 using MyNotes.Core.Models;
 using MyNotes.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using MyNotes.Core.Interfaces.Repositories;
 
 namespace MyNotes.Persistence.Repositories
 {

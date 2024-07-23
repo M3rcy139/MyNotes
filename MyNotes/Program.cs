@@ -1,13 +1,11 @@
-using MyNotes.Application.Interfaces.Auth;
-using MyNotes.Application.Services;
-using MyNotes.Infrastructure;
-using MyNotes.Application.Interfaces.Repositories;
-using MyNotes.Persistence.Repositories;
+using MyNotes.Application;
 using MyNotes.Persistence;
+using MyNotes.Persistence.Mappings;
 using MyNotes.Extensions;
-using Microsoft.EntityFrameworkCore;
 using MyNotes.Middlewares;
 using Microsoft.AspNetCore.CookiePolicy;
+using MyNotes.Infrastructure.Authentication;
+using MyNotes.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -16,22 +14,18 @@ var configuration = builder.Configuration;
 services.AddApiAuthentication(configuration);
 
 services.AddEndpointsApiExplorer();
+
 services.AddSwaggerGen();
+
+services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
+services.Configure<AuthorizationOptions>(configuration.GetSection(nameof(AuthorizationOptions)));
 
 services.AddTransient<ExceptionMiddleware>();
 
-services.AddDbContext<NotesDbContext>(options =>
-{
-    options.UseNpgsql(configuration.GetConnectionString(nameof(NotesDbContext)));
-});
-services.AddScoped<IJwtProvider, JwtProvider>();
-services.AddScoped<IPasswordHasher, PasswordHasher>();
-
-services.AddScoped<INotesRepository, NotesRepository>();
-services.AddScoped<IUsersRepository, UsersRepository>();
-
-services.AddScoped<NotesService>();
-services.AddScoped<UsersService>();
+services
+    .AddPersistence(configuration)
+    .AddApplication()
+    .AddInfrastructure();
 
 services.AddAutoMapper(typeof(DataBaseMappings));
 
@@ -58,10 +52,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.AddMappedEndpoints();
-
-app.MapGet("get", () =>
-{
-    return Results.Ok("ok");
-}).RequireAuthorization();
 
 app.Run();

@@ -1,16 +1,18 @@
 ﻿using MyNotes.Application.Interfaces.Auth;
 using MyNotes.Core.Models;
-using MyNotes.Application.Interfaces.Repositories;
+using MyNotes.Core.Interfaces.Repositories;
+using MyNotes.Core.Interfaces.Services;
+using MyNotes.Core.Enums;
 
 namespace MyNotes.Application.Services
 {
-    public class UsersService
+    public class UserService : IUserService
     {
         private readonly IUsersRepository _usersRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtProvider _jwtProvider;
 
-        public UsersService(
+        public UserService(
             IJwtProvider jwtProvider,
             IUsersRepository usersRepository, 
             IPasswordHasher passwordHasher)
@@ -20,13 +22,13 @@ namespace MyNotes.Application.Services
             _passwordHasher = passwordHasher; 
         }
 
-        public async Task Register(string userName, string password, string email)
+        public async Task Register(string userName, string password, string email, Role role)
         {
             var hashedPassword = _passwordHasher.Generate(password);
 
             var user = User.Create(Guid.NewGuid(), userName, hashedPassword , email);
 
-            await _usersRepository.Add(user);
+            await _usersRepository.Add(user, role);
         }
 
         public async Task<string> Login(string email, string password)

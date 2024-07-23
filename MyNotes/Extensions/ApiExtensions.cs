@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MyNotes.Endpoints;
 using System.Text;
-using MyNotes.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
-using System.Security;
+using MyNotes.Core.Enums;
+using MyNotes.Infrastructure.Authentication;
+using MyNotes.Core.Interfaces.Services;
+using MyNotes.Application.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 
 namespace MyNotes.Extensions
 {
@@ -18,8 +22,6 @@ namespace MyNotes.Extensions
         public static void AddApiAuthentication(this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
-
             var jwtOptions = configuration.GetSection(nameof(JwtOptions)).Get<JwtOptions>();
 
             services
@@ -34,7 +36,7 @@ namespace MyNotes.Extensions
                     options.RequireHttpsMetadata = true;
                     options.SaveToken = true;
 
-                    options.TokenValidationParameters = new()
+                    options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = false,
                         ValidateAudience = false,
@@ -55,8 +57,19 @@ namespace MyNotes.Extensions
                         };
                     });
 
+            services.AddScoped<IPermissionService, PermissionService>();
+            services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
             services.AddAuthorization();
         }
+
+        public static IEndpointConventionBuilder RequirePermissions<TBuilder>(
+            this TBuilder builder, params Permission[] permissions)
+            where TBuilder : IEndpointConventionBuilder
+        {
+            return builder.RequireAuthorization(policy =>
+                policy.AddRequirements(new PermissionRequirement(permissions)));
+        }
+
     }
 }

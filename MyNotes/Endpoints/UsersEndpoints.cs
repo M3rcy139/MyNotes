@@ -17,21 +17,21 @@ namespace MyNotes.Endpoints
 
         private static async Task<IResult> Register(
             [FromBody]RegisterUserRequest request,
-            UsersService userService)
+            UserService userService)
         {
-            await userService.Register(request.UserName,request.Password, request.Email);
+            await userService.Register(request.UserName,request.Password, request.Email, request.Role);
 
             return Results.Ok();
         }
 
         private static async Task<IResult> Login([FromBody]LoginUserRequest request, 
-            UsersService usersService, HttpContext context)
+            UserService usersService, HttpContext context)
         {
             var token = await usersService.Login(request.Email, request.Password);
 
             context.Response.Cookies.Append("tasty-cookies", token);
 
-            return Results.Ok();
+            return Results.Ok(token);
         }
     }
 }

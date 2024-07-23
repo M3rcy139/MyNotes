@@ -2,6 +2,8 @@
 using MyNotes.Contracts;
 using MyNotes.Application.Services;
 using MyNotes.Core.Models;
+using MyNotes.Extensions;
+using MyNotes.Core.Enums;
 
 namespace MyNotes.Endpoints
 {
@@ -9,11 +11,11 @@ namespace MyNotes.Endpoints
     {
         public static IEndpointRouteBuilder MapNotesEndpoints(this IEndpointRouteBuilder app)
         {
-            var endpoints = app.MapGroup("notes").RequireAuthorization();
+            var endpoints = app.MapGroup("notes");
 
-            endpoints.MapPost("create", Create);
+            endpoints.MapPost("create", Create).RequirePermissions(Permission.Create);
 
-            endpoints.MapGet("get", Get);
+            endpoints.MapGet("get", Get).RequirePermissions(Permission.Read);
 
             return endpoints;
         }

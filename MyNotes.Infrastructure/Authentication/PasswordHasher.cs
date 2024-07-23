@@ -1,6 +1,6 @@
 ﻿using MyNotes.Application.Interfaces.Auth;
 
-namespace MyNotes.Infrastructure
+namespace MyNotes.Infrastructure.Authentication
 {
     public class PasswordHasher : IPasswordHasher
     {

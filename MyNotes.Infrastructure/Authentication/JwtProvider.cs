@@ -7,7 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace MyNotes.Infrastructure
+namespace MyNotes.Infrastructure.Authentication
 {
     public class JwtProvider(IOptions<JwtOptions> options) : IJwtProvider
     {
@@ -15,10 +15,10 @@ namespace MyNotes.Infrastructure
 
         public string Generate(User user)
         {
-            Claim[] claims = 
+            Claim[] claims =
             [
-                new("userId", user.Id.ToString())
-
+                new(CustomClaims.UserId, user.Id.ToString()),
+                new("Admin", "true")
             ];
 
             var signingCredentials = new SigningCredentials(

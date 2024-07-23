@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using MyNotes.Persistence.Configurations;
 using MyNotes.Persistence.Entities;
 
 namespace MyNotes.Persistence
@@ -8,11 +10,12 @@ namespace MyNotes.Persistence
     {
         public DbSet<NoteEntity> Notes { get; set; }
         public DbSet<UserEntity> Users { get; set; }
+        public DbSet<RoleEntity> Roles { get; set; }
 
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    base.OnModelCreating(modelBuilder);
-        //}
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(NotesDbContext).Assembly);
+        }
     }
 }
