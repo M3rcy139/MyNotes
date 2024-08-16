@@ -4,10 +4,9 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using MyNotes.Core.Enums;
 using MyNotes.Infrastructure.Authentication;
-using MyNotes.Core.Interfaces.Services;
+using MyNotes.Application.Interfaces.Services;
 using MyNotes.Application.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
 
 namespace MyNotes.Extensions
 {

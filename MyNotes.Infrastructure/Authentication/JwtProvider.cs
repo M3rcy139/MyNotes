@@ -17,8 +17,8 @@ namespace MyNotes.Infrastructure.Authentication
         {
             Claim[] claims =
             [
-                new(CustomClaims.UserId, user.Id.ToString()),
-                new("Admin", "true")
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new(CustomClaims.UserId, user.Id.ToString())
             ];
 
             var signingCredentials = new SigningCredentials(

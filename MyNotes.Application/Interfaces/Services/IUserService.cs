@@ -1,11 +1,11 @@
-﻿
-using MyNotes.Core.Enums;
+﻿using MyNotes.Core.Enums;
 
-namespace MyNotes.Core.Interfaces.Services
+namespace MyNotes.Application.Interfaces.Services
 {
     public interface IUserService
     {
         Task<string> Login(string email, string password);
         Task Register(string userName, string email, string password, Role role);
+        Guid GetCurrentUserId();
     }
 }

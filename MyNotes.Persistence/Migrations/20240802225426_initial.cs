@@ -15,20 +15,6 @@ namespace MyNotes.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Notes",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Notes", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PermissionEntity",
                 columns: table => new
                 {
@@ -93,6 +79,27 @@ namespace MyNotes.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Notes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserNoteId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notes_Users_UserNoteId",
+                        column: x => x.UserNoteId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserRoleEntity",
                 columns: table => new
                 {
@@ -147,6 +154,11 @@ namespace MyNotes.Persistence.Migrations
                     { 4, 1 },
                     { 1, 2 }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notes_UserNoteId",
+                table: "Notes",
+                column: "UserNoteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RolePermissionEntity_PermissionId",

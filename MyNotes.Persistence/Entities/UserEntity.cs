@@ -9,6 +9,7 @@ namespace MyNotes.Persistence.Entities
         public string PasswordHash { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
 
+        public ICollection<NoteEntity> Notes { get; set; } = [];
         public ICollection<RoleEntity> Roles { get; set; } = [];
     }
 }

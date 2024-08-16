@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MyNotes.Application.Services;
+using MyNotes.Application.Interfaces.Services;
 
 namespace MyNotes.Application
 {
@@ -7,8 +8,9 @@ namespace MyNotes.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            services.AddScoped<NotesService>();
-            services.AddScoped<UserService>();
+            services.AddHttpContextAccessor();
+            services.AddScoped<INoteService, NoteService>();
+            services.AddScoped<IUserService, UserService>();
 
             return services;
         }

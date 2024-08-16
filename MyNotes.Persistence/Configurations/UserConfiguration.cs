@@ -15,6 +15,10 @@ namespace MyNotes.Persistence.Configurations
                 .UsingEntity<UserRoleEntity>(
                     l => l.HasOne<RoleEntity>().WithMany().HasForeignKey(r => r.RoleId),
                     r => r.HasOne<UserEntity>().WithMany().HasForeignKey(u => u.UserId));
+
+            builder.HasMany(n => n.Notes)
+                .WithOne(u => u.User)
+                .HasForeignKey(u => u.UserNoteId);
         }
     }
 }

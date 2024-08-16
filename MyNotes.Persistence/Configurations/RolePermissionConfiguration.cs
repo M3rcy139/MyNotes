@@ -15,10 +15,14 @@ namespace MyNotes.Persistence.Configurations
 
             builder.HasData(Create(Role.Admin, Permission.Create),
                     Create(Role.Admin, Permission.Read),
+                    Create(Role.Admin, Permission.ReadAll),
                     Create(Role.Admin, Permission.Update),
                     Create(Role.Admin, Permission.Delete),
-
-                    Create(Role.User, Permission.Read));
+                    
+                    Create(Role.User, Permission.Create),
+                    Create(Role.User, Permission.Read),
+                    Create(Role.User, Permission.Update),
+                    Create(Role.User, Permission.Delete));
         }
 
         private RolePermissionEntity Create(Role role, Permission permission)

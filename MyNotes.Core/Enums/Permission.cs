@@ -6,6 +6,7 @@ namespace MyNotes.Core.Enums
         Read = 1,
         Create = 2,
         Update = 3, 
-        Delete = 4
+        Delete = 4,
+        ReadAll = 5
     }
 }

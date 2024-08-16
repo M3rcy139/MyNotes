@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyNotes.Persistence.Migrations
 {
     [DbContext(typeof(NotesDbContext))]
-    [Migration("20240714144102_initial")]
-    partial class initial
+    [Migration("20240802233652_initial2")]
+    partial class initial2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,7 +42,12 @@ namespace MyNotes.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid>("UserNoteId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserNoteId");
 
                     b.ToTable("Notes");
                 });
@@ -195,6 +200,17 @@ namespace MyNotes.Persistence.Migrations
                     b.ToTable("UserRoleEntity");
                 });
 
+            modelBuilder.Entity("MyNotes.Persistence.Entities.NoteEntity", b =>
+                {
+                    b.HasOne("MyNotes.Persistence.Entities.UserEntity", "User")
+                        .WithMany("Notes")
+                        .HasForeignKey("UserNoteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MyNotes.Persistence.Entities.RolePermissionEntity", b =>
                 {
                     b.HasOne("MyNotes.Persistence.Entities.PermissionEntity", null)
@@ -223,6 +239,11 @@ namespace MyNotes.Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MyNotes.Persistence.Entities.UserEntity", b =>
+                {
+                    b.Navigation("Notes");
                 });
 #pragma warning restore 612, 618
         }

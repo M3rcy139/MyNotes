@@ -1,6 +1,6 @@
-﻿using MyNotes.Core.Interfaces.Services;
+﻿using MyNotes.Application.Interfaces.Services;
 using MyNotes.Core.Enums;
-using MyNotes.Core.Interfaces.Repositories;
+using MyNotes.Application.Interfaces.Repositories;
 
 
 namespace MyNotes.Application.Services

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MyNotes.Core.Interfaces.Repositories;
+using MyNotes.Application.Interfaces.Repositories;
 using MyNotes.Persistence.Repositories;
 
 namespace MyNotes.Persistence

@@ -1,8 +1,10 @@
 ﻿using MyNotes.Application.Interfaces.Auth;
 using MyNotes.Core.Models;
-using MyNotes.Core.Interfaces.Repositories;
-using MyNotes.Core.Interfaces.Services;
+using MyNotes.Application.Interfaces.Repositories;
+using MyNotes.Application.Interfaces.Services;
 using MyNotes.Core.Enums;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace MyNotes.Application.Services
 {
@@ -11,15 +13,18 @@ namespace MyNotes.Application.Services
         private readonly IUsersRepository _usersRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtProvider _jwtProvider;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public UserService(
             IJwtProvider jwtProvider,
             IUsersRepository usersRepository, 
-            IPasswordHasher passwordHasher)
+            IPasswordHasher passwordHasher,
+            IHttpContextAccessor httpContextAccessor)
         {
             _jwtProvider = jwtProvider;
             _usersRepository = usersRepository;
             _passwordHasher = passwordHasher; 
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task Register(string userName, string password, string email, Role role)
@@ -45,6 +50,16 @@ namespace MyNotes.Application.Services
             var token = _jwtProvider.Generate(user);
 
             return token;
+        }
+
+        public Guid GetCurrentUserId()
+        {
+            var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null)
+            {
+                throw new Exception("User not authenticated");
+            }
+            return Guid.Parse(userIdClaim);
         }
     }
 }

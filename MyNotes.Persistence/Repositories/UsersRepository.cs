@@ -2,7 +2,7 @@
 using MyNotes.Persistence.Entities;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using MyNotes.Core.Interfaces.Repositories;
+using MyNotes.Application.Interfaces.Repositories;
 using MyNotes.Core.Enums;
 
 namespace MyNotes.Persistence.Repositories

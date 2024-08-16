@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
-using MyNotes.Core.Interfaces.Services;
-using System;
+using MyNotes.Application.Interfaces.Services;
 
 namespace MyNotes.Infrastructure.Authentication
 {
