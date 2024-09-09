@@ -3,7 +3,7 @@ namespace MyNotes.Core.Models
 {
     public class User
     {
-        private User(Guid id, string userName,string passwordHash, string email)
+        public User(Guid id, string userName,string passwordHash, string email)
         {
             Id = id;
             UserName = userName;
@@ -16,9 +16,9 @@ namespace MyNotes.Core.Models
         public string PasswordHash { get; private set; }
         public string Email { get; private set; }
 
-        public static User Create(Guid id,string userName,string passwordHash,string email)
-        {
-            return new User(id, userName, passwordHash, email);
-        }
+        //public static User Create(Guid id,string userName,string passwordHash,string email)
+        //{
+        //    return new User(id, userName, passwordHash, email);
+        //}
     }
 }

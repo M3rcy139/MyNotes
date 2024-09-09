@@ -31,7 +31,7 @@ namespace MyNotes.Application.Services
         {
             var hashedPassword = _passwordHasher.Generate(password);
 
-            var user = User.Create(Guid.NewGuid(), userName, hashedPassword , email);
+            var user = new User(Guid.NewGuid(), userName, hashedPassword , email);
 
             await _usersRepository.Add(user, role);
         }

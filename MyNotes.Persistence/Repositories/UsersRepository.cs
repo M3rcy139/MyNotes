@@ -21,7 +21,15 @@ namespace MyNotes.Persistence.Repositories
         {
             var roleEntity = await _context.Roles
                 .SingleOrDefaultAsync(r => r.Id == (int)role)
-                ?? throw new InvalidOperationException();
+                ?? throw new Exception("There is no such role");
+
+            var userExists = await _context.Users
+                .AnyAsync(u => u.Email == user.Email);
+
+            if (userExists)
+            {
+                throw new Exception("A user already exists");
+            }
 
             var userEntity = new UserEntity()
             {
@@ -40,7 +48,7 @@ namespace MyNotes.Persistence.Repositories
         {
             var userEntity = await _context.Users
                 .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Email == email) ?? throw new Exception();
+                .FirstOrDefaultAsync(u => u.Email == email) ?? throw new Exception("The user was not found");
 
             return _mapper.Map<User>(userEntity);
         }
