@@ -131,7 +131,8 @@ namespace MyNotes.Persistence.Migrations
                     { 1, "Read" },
                     { 2, "Create" },
                     { 3, "Update" },
-                    { 4, "Delete" }
+                    { 4, "Delete" },
+                    { 5, "ReadAll" }
                 });
 
             migrationBuilder.InsertData(
@@ -152,7 +153,11 @@ namespace MyNotes.Persistence.Migrations
                     { 2, 1 },
                     { 3, 1 },
                     { 4, 1 },
-                    { 1, 2 }
+                    { 5, 1 },
+                    { 1, 2 },
+                    { 2, 2 },
+                    { 3, 2 },
+                    { 4, 2 }
                 });
 
             migrationBuilder.CreateIndex(

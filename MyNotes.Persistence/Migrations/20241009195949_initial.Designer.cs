@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyNotes.Persistence.Migrations
 {
     [DbContext(typeof(NotesDbContext))]
-    [Migration("20240802233652_initial2")]
-    partial class initial2
+    [Migration("20241009195949_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -88,6 +88,11 @@ namespace MyNotes.Persistence.Migrations
                         {
                             Id = 4,
                             Name = "Delete"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "ReadAll"
                         });
                 });
 
@@ -148,6 +153,11 @@ namespace MyNotes.Persistence.Migrations
                         new
                         {
                             RoleId = 1,
+                            PermissionId = 5
+                        },
+                        new
+                        {
+                            RoleId = 1,
                             PermissionId = 3
                         },
                         new
@@ -158,7 +168,22 @@ namespace MyNotes.Persistence.Migrations
                         new
                         {
                             RoleId = 2,
+                            PermissionId = 2
+                        },
+                        new
+                        {
+                            RoleId = 2,
                             PermissionId = 1
+                        },
+                        new
+                        {
+                            RoleId = 2,
+                            PermissionId = 3
+                        },
+                        new
+                        {
+                            RoleId = 2,
+                            PermissionId = 4
                         });
                 });
 

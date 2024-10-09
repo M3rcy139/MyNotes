@@ -1,7 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using MyNotes.Persistence.Configurations;
 using MyNotes.Persistence.Entities;
 
 namespace MyNotes.Persistence

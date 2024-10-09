@@ -19,19 +19,57 @@ namespace MyNotes.Endpoints
             [FromBody]RegisterUserRequest request,
             IUserService userService)
         {
-            await userService.Register(request.UserName,request.Password, request.Email, request.Role);
+            try
+            {
+                await userService.Register(request.UserName,request.Password, request.Email, request.Role);
 
-            return Results.Ok();
+                return Results.Ok();
+            }
+            catch (ArgumentException ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = new
+                {
+                    error = "An unexpected error occurred.",
+                    details = ex.Message
+                };
+
+                return Results.Problem(detail: ex.Message, statusCode: 500);
+            }
         }
 
         private static async Task<IResult> Login([FromBody]LoginUserRequest request, 
             IUserService usersService, HttpContext context)
         {
-            var token = await usersService.Login(request.Email, request.Password);
+            try
+            {
+                var token = await usersService.Login(request.Email, request.Password);
 
-            context.Response.Cookies.Append("tasty-cookies", token);
+                context.Response.Cookies.Append("tasty-cookies", token);
 
-            return Results.Ok(token);
+                return Results.Ok(token);
+            }
+            catch (ArgumentException ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Results.Json(new { error = ex.Message }, statusCode: 401);
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = new
+                {
+                    error = "An unexpected error occurred.",
+                    details = ex.Message
+                };
+
+                return Results.Problem(detail: ex.Message, statusCode: 500);
+            }
         }
     }
 }

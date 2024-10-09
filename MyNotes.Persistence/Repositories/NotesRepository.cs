@@ -42,6 +42,11 @@ namespace MyNotes.Persistence.Repositories
                 .Select(n => n)
                 .ToListAsync(ct);
 
+            if (noteEntities == null || !noteEntities.Any())
+            {
+                throw new ArgumentException("The notes do not exist for the given user.");
+            }
+
             return _mapper.Map<List<Note>>(noteEntities);
         }
 
@@ -52,6 +57,11 @@ namespace MyNotes.Persistence.Repositories
             var noteEntities = await notesQuery
                 .Select(n => n)
                 .ToListAsync(ct);
+
+            if (noteEntities == null || !noteEntities.Any())
+            {
+                throw new ArgumentException("The notes do not exist for the given user.");
+            }
 
             return _mapper.Map<List<Note>>(noteEntities);
         }
@@ -77,6 +87,12 @@ namespace MyNotes.Persistence.Repositories
 
         public async Task Update(Guid id, string title, string description)
         {
+            var noteExists = await _context.Notes.AnyAsync(n => n.Id == id);
+            if (!noteExists)
+            {
+                throw new ArgumentException($"Note with id {id} does not exist.");
+            }
+
             await _context.Notes
                 .Where(n => n.Id == id)
                 .ExecuteUpdateAsync(s => s
@@ -85,6 +101,12 @@ namespace MyNotes.Persistence.Repositories
         }
         public async Task Delete(Guid id)
         {
+            var noteExists = await _context.Notes.AnyAsync(n => n.Id == id);
+            if (!noteExists)
+            {
+                throw new ArgumentException($"Note with id {id} does not exist.");
+            }
+
             await _context.Notes
                 .Where(n => n.Id == id)
                 .ExecuteDeleteAsync();

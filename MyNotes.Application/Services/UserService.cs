@@ -44,7 +44,7 @@ namespace MyNotes.Application.Services
 
             if (result == false)
             {
-                throw new Exception("Failed to login");
+                throw new InvalidOperationException("Invalid email or password.");
             }
 
             var token = _jwtProvider.Generate(user);
@@ -57,7 +57,7 @@ namespace MyNotes.Application.Services
             var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userIdClaim == null)
             {
-                throw new Exception("User not authenticated");
+                throw new UnauthorizedAccessException("User is not authenticated.");
             }
             return Guid.Parse(userIdClaim);
         }

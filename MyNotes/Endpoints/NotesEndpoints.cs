@@ -32,52 +32,145 @@ namespace MyNotes.Endpoints
             CancellationToken ct, INoteService noteService,
             IUserService userService)
         {
-            var userNoteId = userService.GetCurrentUserId();
+            try
+            {
+                var userNoteId = userService.GetCurrentUserId();
 
-            var note = new Note(userNoteId, request.Title, request.Description);
+                var note = new Note(userNoteId, request.Title, request.Description);
 
-            await noteService.CreateNote(note);
+                await noteService.CreateNote(note);
 
-            return Results.Ok();
+                return Results.Ok();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Results.Conflict(new { error = ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = new
+                {
+                    error = "An unexpected error occurred.",
+                    details = ex.Message
+                };
+
+                return Results.Problem(detail: ex.Message, statusCode: 500);
+            }
         }
 
-        private static async Task<IResult> Get([FromQuery] string? search, [FromQuery] string? sortItem, 
+        private static async Task<IResult> Get([FromQuery] string? search, [FromQuery] string? sortItem,
             [FromQuery] string? sortOrder,
             CancellationToken ct, INoteService noteService,
             IUserService userService)
         {
-            var userNoteId = userService.GetCurrentUserId();
-            var notes = await noteService.GetNote(userNoteId, search, sortItem, sortOrder, ct);
+            try
+            {
+                var userNoteId = userService.GetCurrentUserId();
+                var notes = await noteService.GetNote(userNoteId, search, sortItem, sortOrder, ct);
 
-            var response = notes 
-                .Select(n => new GetNotesResponse(n.Id, n.Title, n.Description, n.CreatedAt));
+                var response = notes
+                    .Select(n => new GetNotesResponse(n.Id, n.Title, n.Description, n.CreatedAt));
 
-            return Results.Ok(response);
+                return Results.Ok(response);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Results.Conflict(new { error = ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = new
+                {
+                    error = "An unexpected error occurred.",
+                    details = ex.Message
+                };
+
+                return Results.Problem(detail: ex.Message, statusCode: 500);
+            }
         }
 
         private static async Task<IResult> GetAll([FromQuery] string? search, [FromQuery] string? sortItem,
             [FromQuery] string? sortOrder, CancellationToken ct, INoteService noteService)
         {
-            var notes = await noteService.GetAllNotes(search, sortItem, sortOrder, ct);
+            try
+            {
+                var notes = await noteService.GetAllNotes(search, sortItem, sortOrder, ct);
 
-            var response = notes
-                .Select(n => new GetNotesResponse(n.Id, n.Title, n.Description, n.CreatedAt));
+                var response = notes
+                    .Select(n => new GetNotesResponse(n.Id, n.Title, n.Description, n.CreatedAt));
 
-            return Results.Ok(response);
+                return Results.Ok(response);
+            }
+            catch (ArgumentException ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = new
+                {
+                    error = "An unexpected error occurred.",
+                    details = ex.Message
+                };
+
+                return Results.Problem(detail: ex.Message, statusCode: 500);
+            }
         }
 
         public static async Task<IResult> Update(Guid id, [FromBody] CreateNoteRequest request, 
             INotesRepository notesRepository, CancellationToken ct)
         {
-            await notesRepository.Update(id, request.Title, request.Description);
+            try
+            {
+                await notesRepository.Update(id, request.Title, request.Description);
 
-            return Results.Ok();
+                return Results.Ok();
+            }
+            catch (ArgumentException ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = new
+                {
+                    error = "An unexpected error occurred.",
+                    details = ex.Message
+                };
+
+                return Results.Problem(detail: ex.Message, statusCode: 500);
+            }
         }
         private static async Task<IResult> Delete(Guid id, INotesRepository notesRepository, CancellationToken ct)
         {
-            await notesRepository.Delete(id);
+            try
+            {
+                await notesRepository.Delete(id);
+    
+                return Results.Ok();
+            }
+            catch (ArgumentException ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = new
+                {
+                    error = "An unexpected error occurred.",
+                    details = ex.Message
+                };
 
-            return Results.Ok();
+                return Results.Problem(detail: ex.Message, statusCode: 500);
+            }
         }
     }
 }
